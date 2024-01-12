@@ -14,8 +14,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        try {
-            Statement stmnt = getConn().createStatement();
+        try (Statement stmnt = getConn().createStatement()){
             stmnt.executeUpdate(CREATE_TABLE);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -23,8 +22,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        try {
-            Statement stmnt = getConn().createStatement();
+        try (Statement stmnt = getConn().createStatement()){
             stmnt.executeUpdate(DROP_TABLE);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -32,8 +30,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try {
-            PreparedStatement pstmt = getConn().prepareStatement(INSERT_INTO);
+        try (PreparedStatement pstmt = getConn().prepareStatement(INSERT_INTO)){
             pstmt.setString(1, name);
             pstmt.setString(2, lastName);
             pstmt.setByte(3, age);
@@ -45,8 +42,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void removeUserById(long id) {
-        try {
-            PreparedStatement pstmt = getConn().prepareStatement(DELETE_FROM);
+        try (PreparedStatement pstmt = getConn().prepareStatement(DELETE_FROM)){
             pstmt.setLong(1, id);
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -56,9 +52,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public List<User> getAllUsers() {
         List <User> list = new ArrayList<>();
-        try {
-            Statement stmnt = getConn().createStatement();
-            ResultSet resultSet = stmnt.executeQuery("SELECT * FROM users");
+        try (ResultSet resultSet = getConn().createStatement().executeQuery("SELECT * FROM users")){
             while(resultSet.next()) {
                 String name = resultSet.getString("name");
                 String lastName = resultSet.getString("lastName");
@@ -77,8 +71,7 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        try {
-            Statement stmnt = getConn().createStatement();
+        try (Statement stmnt = getConn().createStatement()){
             stmnt.executeUpdate(CLEAN);
         } catch (SQLException e) {
             e.printStackTrace();
