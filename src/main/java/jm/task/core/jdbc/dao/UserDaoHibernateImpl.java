@@ -23,7 +23,7 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.begin();
             session.createSQLQuery(CREATE_TABLE).executeUpdate();
             transaction.commit();
-        } catch(Exception e){
+        } catch(HibernateException e){
             if(transaction !=null){
                 transaction.rollback();
             }
@@ -39,7 +39,7 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.begin();
             session.createSQLQuery(DROP_TABLE).executeUpdate();
             transaction.commit();
-        } catch(Exception e){
+        } catch(HibernateException e){
             if(transaction !=null){
                 transaction.rollback();
             }
@@ -55,6 +55,7 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.begin();
             User user = new User(name, lastName, age);
             session.save(user);
+            System.out.println(" User с именем – " + name + " добавлен в базу данных");
             transaction.commit();
         } catch(HibernateException e){
             if(transaction !=null){
@@ -82,10 +83,13 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public List<User> getAllUsers() {
-        try (Session session = getSessionFactory().openSession()) {
+        try (Session session = getSessionFactory().openSession()){
             Query<User> query = session.createQuery("from User", User.class);
             query.stream().forEach(System.out::println);
             return query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
