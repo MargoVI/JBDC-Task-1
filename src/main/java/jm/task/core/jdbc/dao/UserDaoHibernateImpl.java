@@ -1,6 +1,7 @@
 package jm.task.core.jdbc.dao;
 
 import jm.task.core.jdbc.model.User;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -55,7 +56,7 @@ public class UserDaoHibernateImpl implements UserDao {
             User user = new User(name, lastName, age);
             session.save(user);
             transaction.commit();
-        } catch(Exception e){
+        } catch(HibernateException e){
             if(transaction !=null){
                 transaction.rollback();
             }
@@ -71,7 +72,7 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.begin();
             session.delete(session.get(User.class, id));
             transaction.commit();
-        } catch(Exception e){
+        } catch(HibernateException e){
             if(transaction != null){
                 transaction.rollback();
             }
@@ -96,7 +97,7 @@ public class UserDaoHibernateImpl implements UserDao {
             transaction.begin();
             session.createQuery("delete from User").executeUpdate();
             transaction.commit();
-        } catch(Exception e){
+        } catch(HibernateException e){
             if(transaction != null){
                 transaction.rollback();
             }
